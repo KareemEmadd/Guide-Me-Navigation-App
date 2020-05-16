@@ -4,23 +4,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Welcome"
-        android:onClick="login"/>
-    <TextView
-        android:id="@+id/prompt"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+
+
     <SurfaceView
         android:id="@+id/camerapreview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="395dp"
-        android:layout_height="250dp" />
+
 
 </LinearLayout>

@@ -20,6 +20,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -105,7 +106,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
             }else{
                 faceFrameNum++;
-                if(faceFrameNum==3) {
+                if(faceFrameNum==15) {
                     camera.takePicture(null,
                             null, myPictureCallback_JPG);
 
@@ -208,6 +209,8 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder) {
         // TODO Auto-generated method stub
         camera = Camera.open(1);
+        camera.setDisplayOrientation(90);
+
         camera.setFaceDetectionListener(faceDetectionListener);
     }
 
@@ -239,7 +242,13 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            Matrix matrix = new Matrix();
+
+            matrix.postRotate(-90);
+            bitmap= Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
             byte[] data = baos.toByteArray();
 
             UploadTask uploadTask = mountainsRef.putBytes(data);
