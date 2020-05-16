@@ -75,15 +75,7 @@ public class MainActivity extends AppCompatActivity {
         bitmap=(Bitmap)data.getExtras().get("data");
         img.setImageBitmap(bitmap);
 
-//        newImage=ConvertB
-        //
-//        Image image=(Image)data.getExtras().get("data");
-//        Image x=img.
-//        img.setImage;
 
-//        Log.d("Vicky","I'm in.");
-//        new UploadImages().execute();
-//        new authenticationHandler().execute();
 
 
     }
