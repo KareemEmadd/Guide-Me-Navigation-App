@@ -3,6 +3,7 @@ package com.example.graduationproject;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -18,6 +19,14 @@ import java.io.IOException;
 
 class facialLoginHandler extends AsyncTask<String, String,String> {
     String id;
+
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+//        Toast.makeText(,"Please capture image first using open camera button.", Toast.LENGTH_SHORT).show();
+            System.out.println(name);
+    }
+
     String name;
     protected String doInBackground(String... names) {
         OkHttpClient client = new OkHttpClient();
@@ -40,11 +49,11 @@ class facialLoginHandler extends AsyncTask<String, String,String> {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            System.out.println(response.body().toString());
+//            System.out.println(response.body().toString());
             JSONArray jArr= new JSONArray(response.body().string());
             JSONObject obj = new JSONObject(jArr.getJSONObject(0).toString());
             id = obj.getString("id");
-            name=obj.getString("name");
+            name=obj.getString("name").toString();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {

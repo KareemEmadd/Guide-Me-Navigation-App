@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutionException;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +30,8 @@ import android.hardware.Camera.Face;
 import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
+import android.media.AudioManager;
+import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,6 +54,8 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -71,13 +77,29 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
     registrationHandler rh;
     final int RESULT_SAVEIMAGE = 0;
     BitmapFactory.Options option ;
-    String user_id="22";
+    String user_id="0";
     Integer mode;
+    String facialRecID;
+    MediaActionSound sound;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mode =getIntent().getIntExtra("mode",0);
+        if(mode==2){
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference();
+            user_id=myRef.push().getKey();
+            myRef.push().setValue("1");
+            try {
+                registerName();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        sound = new MediaActionSound();
         setContentView(R.layout.activity_authentication);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //        user_id=getIntent().getExtras().getString("UID");
@@ -130,7 +152,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
         @Override
         public void onShutter() {
             // TODO Auto-generated method stub
-
+            sound.play(MediaActionSound.SHUTTER_CLICK);
         }};
 
     PictureCallback myPictureCallback_RAW = new PictureCallback(){
@@ -154,29 +176,13 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
                 Toast.makeText(getApplicationContext(),"No bitmap", Toast.LENGTH_SHORT).show();
 
             }
-//            Uri uriTarget = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, new ContentValues());
-//
-//            OutputStream imageFileOS;
-//            try {
-//                imageFileOS = getContentResolver().openOutputStream(uriTarget);
-//                imageFileOS.write(arg0);
-//                imageFileOS.flush();
-//                imageFileOS.close();
-//                Log.d("capture","Image saved: " + uriTarget.toString());
-////                prompt.setText("Image saved: " + uriTarget.toString());
-//                path=uriTarget.toString();
-//            } catch (FileNotFoundException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
+
 
             camera.stopPreview();
             if(mode==1){
                 login();
             }else if(mode==2){
+
                 registerFace();
             }
 
@@ -229,6 +235,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
             flh = new facialLoginHandler() {
                 protected void onPostExecute(String result) {
                     Toast.makeText(getApplicationContext(), "Welcome back, " + result, Toast.LENGTH_SHORT).show();
+                    System.out.println(result);
 
                 }
 
@@ -237,21 +244,19 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
 
-// Create a reference to "mountains.jpg"
-            StorageReference mountainsRef = storageRef.child("z.jpg");
+            StorageReference LoginPicReference = storageRef.child("LoginImage.jpg");
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            Matrix matrix = new Matrix();
 
+            Matrix matrix = new Matrix();
             matrix.postRotate(-90);
             bitmap= Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
             byte[] data = baos.toByteArray();
 
-            UploadTask uploadTask = mountainsRef.putBytes(data);
+            UploadTask uploadTask = LoginPicReference.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
@@ -310,28 +315,23 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
 
-// Create a reference to "mountains.jpg"
-            StorageReference mountainsRef = storageRef.child("mountains.jpg");
+            StorageReference RegistrationPicReference = storageRef.child("RegistrationImage.jpg");
 
-// Create a reference to 'images/mountains.jpg'
-            StorageReference mountainImagesRef = storageRef.child("images/mountains.jpg");
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
 
-            UploadTask uploadTask = mountainsRef.putBytes(data);
+            UploadTask uploadTask = RegistrationPicReference.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
+
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-//                Uri downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
                     if (taskSnapshot.getMetadata() != null) {
                         if (taskSnapshot.getMetadata().getReference() != null) {
@@ -340,9 +340,11 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     imageUrl = uri.toString();
+
                                     //createNewPost(imageUrl);
                                     System.out.println(user_id);
-//                    ***            r.execute(encode(imageUrl), user_id);
+                                    r.execute(encode(imageUrl), facialRecID);
+                                    ProceedToDetection();
                                 }
                             });
                         }
@@ -363,24 +365,29 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
 
     }
-//    public void registerName() throws ExecutionException, InterruptedException {
-//        String firstname=fname.getText().toString();
-//        String lastname=lname.getText().toString();
-//        if(!firstname.isEmpty() && !firstname.equals("First Name") && !lastname.equals("Last Name") && !lastname.isEmpty()) {
-//            rh = new registrationHandler(){
-//                protected void onPostExecute(String result) {
-//                    Toast.makeText(getApplicationContext(),result+"haaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
-//                    user_id=result;
-//                }
-//
-//            };
-//
-//            rh.execute(firstname,lastname);
-////       user_id=rh.execute(firstname,lastname).get();
-//
-//        }else{
-//            Toast.makeText(getApplicationContext(),"Please enter username first.", Toast.LENGTH_SHORT).show();
-//
-//        }
-//    }
+    public void registerName() throws Exception {
+        String firstname="user";
+        String lastname=user_id;
+        if(!firstname.isEmpty() && !firstname.equals("First Name") && !lastname.equals("Last Name") && !lastname.isEmpty()) {
+            rh = new registrationHandler(){
+                protected void onPostExecute(String result) {
+                    Toast.makeText(getApplicationContext(),result, Toast.LENGTH_SHORT).show();
+                    facialRecID=result;
+                }
+
+            };
+
+            rh.execute(firstname,lastname);
+//       user_id=rh.execute(firstname,lastname).get();
+
+        }else{
+            Toast.makeText(getApplicationContext(),"Please enter username first.", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+    public void ProceedToDetection(){
+        Intent i = new Intent(this, DetectorActivity.class);
+
+        startActivity(i);
+    }
 }

@@ -12,8 +12,12 @@ import android.speech.tts.TextToSpeech;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -30,7 +34,7 @@ Integer mode=0;
 String userid="";
 boolean REGISTRATION_MODE=false;
     public String choice;
-Button btn;
+ImageButton btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,7 @@ Button btn;
             }
         });
 
+        speak("Would you like to register, login, or proceed as a guest?");
 
     }
 
@@ -210,7 +215,7 @@ Button btn;
         startActivity(i);
     }
     public void ProceedToRegistration(){
-        Intent i = new Intent(this, DetectorActivity.class);
+        Intent i = new Intent(this, androidCamera.class);
         mode=2;
         i.putExtra("mode",mode);
         i.putExtra("userid",userid);
