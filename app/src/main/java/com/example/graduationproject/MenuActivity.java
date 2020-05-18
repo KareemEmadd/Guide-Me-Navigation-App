@@ -2,8 +2,10 @@ package com.example.graduationproject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -12,8 +14,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.graduationproject.DetectorActivity;
 import com.example.graduationproject.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +33,12 @@ public class MenuActivity extends Activity {
     TextToSpeech tts;
     SpeechRecognizer speechRecog;
     String choice;
-    String choices[]={"custom","general","new object"};
+    String choices[]={"custom","general","object"};
     ImageButton btn;
+    StorageReference storageRef;
+    StorageReference videoRef;
+    static final int REQUEST_VIDEO_CAPTURE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,8 +153,9 @@ public class MenuActivity extends Activity {
         } else if (result_message.indexOf("general") != -1) {
             ProceedToDetection();
 //            ProceedToRegistration();
-        } else if (result_message.indexOf("add object") != -1) {
+        } else if (result_message.indexOf("object") != -1) {
 //            ProceedToAddObject();
+            dispatchTakeVideoIntent();
         }
 
         speechRecog.stopListening();
@@ -151,5 +166,54 @@ public class MenuActivity extends Activity {
 
         startActivity(i);
     }
+
+    private void dispatchTakeVideoIntent() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode,int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+        if (requestCode == REQUEST_VIDEO_CAPTURE) {
+//            if (resultCode == RESULT_OK) {
+            Uri selectedVideoUri = data.getData();
+            storageRef = FirebaseStorage.getInstance().getReference();
+            videoRef = storageRef.child("videos");
+            System.out.println("starting upload");
+
+            uploadData(selectedVideoUri);
+        }
+    }
+
+    private void uploadData(Uri videoUri) {
+        System.out.println("starting upload");
+        if(videoUri != null){
+            UploadTask uploadTask = videoRef.putFile(videoUri);
+
+            uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if(task.isSuccessful())
+                        Toast.makeText(getBaseContext(), "Upload Complete", Toast.LENGTH_SHORT).show();
+//                    progressBarUpload.setVisibility(View.INVISIBLE);
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                    updateProgress(taskSnapshot);
+                }
+            });
+        }else {
+            Toast.makeText(getBaseContext(), "Nothing to upload", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
 
 }
