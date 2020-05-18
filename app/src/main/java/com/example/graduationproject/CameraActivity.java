@@ -1,20 +1,5 @@
 package com.example.graduationproject;
 
-/*
- * Copyright 2019 The TensorFlow Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 
 import android.Manifest;
@@ -49,7 +34,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -63,7 +47,6 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.graduationproject.env.ImageUtils;
-import com.google.android.gms.common.logging.Logger;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.nio.ByteBuffer;
@@ -77,7 +60,6 @@ public abstract class CameraActivity extends AppCompatActivity
         Camera.PreviewCallback,
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
-//    private static final Logger LOGGER;
 
     private static final int PERMISSIONS_REQUEST = 1;
 
@@ -107,25 +89,17 @@ public abstract class CameraActivity extends AppCompatActivity
 
     private TextView headerObject;
     public String searcher;
-    boolean valid=true;
 
-    private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private TextToSpeech tts;
     private SpeechRecognizer speechRecog;
-    Toolbar toolbar;
-    FrameLayout frameLayout;
     RelativeLayout relativeLayout;
     String[] labels = { "person" , "backpack" , "handbag" , "suitcase" , "cup" , "chair" , "table" , "tv" , "laptop" , "keyboard" , "mobile", "book" , "clock" , "bottle" };
 
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-//        LOGGER=new Logger(CameraActivity.class);
-//        LOGGER.d("onCreate " + this);
         super.onCreate(null);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         setContentView(R.layout.activity_camera);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -241,7 +215,6 @@ public abstract class CameraActivity extends AppCompatActivity
     @Override
     public void onPreviewFrame(final byte[] bytes, final Camera camera) {
         if (isProcessingFrame) {
-//            LOGGER.w("Dropping frame!");
             return;
         }
 
@@ -339,7 +312,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
             processImage();
         } catch (final Exception e) {
-//            LOGGER.e( "Exception!");
             Trace.endSection();
             return;
         }
@@ -354,9 +326,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
     @Override
     public synchronized void onResume() {
-//        LOGGER.d("onResume " + this);
         super.onResume();
-//        Reinitialize the recognizer and tts engines upon resuming from background such as after openning the browser
         initializeSpeechRecognizer();
         initializeTextToSpeech();
         handlerThread = new HandlerThread("inference");
@@ -367,7 +337,6 @@ public abstract class CameraActivity extends AppCompatActivity
 
     @Override
     public synchronized void onPause() {
-//        LOGGER.d("onPause " + this);
 
         handlerThread.quitSafely();
         try {
@@ -375,7 +344,6 @@ public abstract class CameraActivity extends AppCompatActivity
             handlerThread = null;
             handler = null;
         } catch (final InterruptedException e) {
-//            LOGGER.e("Exception!", e);
         }
 
         super.onPause();
@@ -384,13 +352,11 @@ public abstract class CameraActivity extends AppCompatActivity
 
     @Override
     public synchronized void onStop() {
-//        LOGGER.d("onStop " + this);
         super.onStop();
     }
 
     @Override
     public synchronized void onDestroy() {
-//        LOGGER.d("onDestroy " + this);
         super.onDestroy();
     }
 
@@ -677,16 +643,9 @@ public abstract class CameraActivity extends AppCompatActivity
         result_message = result_message.toLowerCase();
         String myObjects;
 
-//        Handle at least four sample cases
 
-//        First: What is your Name?
-//        Second: What is the time?
-//        Third: Is the earth flat or a sphere?f
-//        Fourth: Open a browser and open url
-        if(result_message.indexOf("mobile") != -1)
-        {
-            speak("Dawar aala haga tanya");
-        }
+
+
         if(result_message.indexOf("what") != -1){
             if(result_message.indexOf("your name") != -1){
                 speak("My Name is Mr.Android. Nice to meet you!");
@@ -699,7 +658,7 @@ public abstract class CameraActivity extends AppCompatActivity
             speak("Don't be silly, The earth is a sphere. As are all other planets and celestial bodies");
         } else if (result_message.indexOf("browser") != -1){
             speak("Opening a browser right away master.");
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/AnNJPf-4T70"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com"));
             startActivity(intent);
         }
     }

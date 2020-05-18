@@ -7,10 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -23,7 +21,6 @@ import android.hardware.Camera.Face;
 import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
-import android.media.AudioManager;
 import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,9 +32,12 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+
+import com.example.graduationproject.FacialAuthentication.facialLoginHandler;
+import com.example.graduationproject.FacialAuthentication.registrationFaceHandler;
+import com.example.graduationproject.FacialAuthentication.registrationHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -49,7 +49,6 @@ import com.google.firebase.storage.UploadTask;
 
 public class androidCamera extends Activity implements SurfaceHolder.Callback{
     int faceFrameNum=0;
-    String path=null;
     Camera camera;
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
@@ -57,12 +56,10 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
     LayoutInflater controlInflater = null;
     Bitmap bitmap;
     Button buttonTakePicture;
-    TextView prompt;
     String imageUrl;
     registrationFaceHandler r;
     facialLoginHandler flh;
     registrationHandler rh;
-    final int RESULT_SAVEIMAGE = 0;
     BitmapFactory.Options option ;
     String user_id="0";
     Integer mode;
@@ -78,7 +75,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
         spinner = (ProgressBar)findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
-        if(mode==2){
+        if(mode==1){
 
             try {
                 registerName();
@@ -371,7 +368,6 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
             };
 
             rh.execute(firstname,lastname);
-//       user_id=rh.execute(firstname,lastname).get();
 
         }else{
             Toast.makeText(getApplicationContext(),"Please enter username first.", Toast.LENGTH_SHORT).show();

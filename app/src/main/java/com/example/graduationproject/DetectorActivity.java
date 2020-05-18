@@ -44,14 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import com.example.graduationproject.customview.OverlayView;
-import com.example.graduationproject.customview.OverlayView.DrawCallback;
-import com.example.graduationproject.env.BorderedText;
-import com.example.graduationproject.env.ImageUtils;
-import com.example.graduationproject.env.Logger;
-import com.example.graduationproject.tflite.Classifier;
-import com.example.graduationproject.tflite.TFLiteObjectDetectionAPIModel;
-import com.example.graduationproject.tracking.MultiBoxTracker;
+
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
@@ -109,6 +102,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 //    LOGGER.i("height ="+height +" h "+width +" w ");
 
     screenCenter=width/2;
+    Log.d("CoordinatesCenter", Integer.toString(screenCenter));
+    Log.d("CoordinatesCenter", Integer.toString(width));
+    Log.d("CoordinatesCenter", Integer.toString(height));
+
     initializeTextToSpeech();
     final float textSizePx =
             TypedValue.applyDimension(
@@ -228,6 +225,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 int i=0;
                 for (final Classifier.Recognition result : results) {
                   final RectF location = result.getLocation();
+                  location.sort();
                   canvas.drawRect(location, paint);
 
                   if (searcher.equals(""))
@@ -277,6 +275,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                       cropToFrameTransform.mapRect(location);
 
                       result.setLocation(location);
+
                       Log.d("Coordinates",location.toString());
                       mappedRecognitions.add(result);
                       if(location.centerX()>screenCenter) {
@@ -365,66 +364,4 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       }
     });
   }
-//  private void initializeSpeechRecognizer() {
-//    if (SpeechRecognizer.isRecognitionAvailable(this)) {
-//      speechRecog = SpeechRecognizer.createSpeechRecognizer(this);
-//      speechRecog.setRecognitionListener(new RecognitionListener() {
-//        @Override
-//        public void onReadyForSpeech(Bundle params) {
-//
-//        }
-//
-//        @Override
-//        public void onBeginningOfSpeech() {
-//
-//        }
-//
-//        @Override
-//        public void onRmsChanged(float rmsdB) {
-//
-//        }
-//
-//        @Override
-//        public void onBufferReceived(byte[] buffer) {
-//
-//        }
-//
-//        @Override
-//        public void onEndOfSpeech() {
-//
-//        }
-//
-//        @Override
-//        public void onError(int error) {
-//
-//        }
-//
-//        @Override
-//        public void onResults(Bundle results) {
-//          List<String> result_arr = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-//          processResult(result_arr.get(0));
-//          headerObject.setText(result_arr.get(0));
-//          searcher = result_arr.get(0).toLowerCase();
-//
-//          List<String> list = Arrays.asList(labels);
-//          if (!list.contains(searcher.toLowerCase()))
-//          {
-//            speak("Not Valid");
-//          }
-//
-//
-//        }
-//
-//        @Override
-//        public void onPartialResults(Bundle partialResults) {
-//
-//        }
-//
-//        @Override
-//        public void onEvent(int eventType, Bundle params) {
-//
-//        }
-//      });
-//    }
-//  }
 }

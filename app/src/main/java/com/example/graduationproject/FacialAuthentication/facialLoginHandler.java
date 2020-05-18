@@ -1,4 +1,4 @@
-package com.example.graduationproject;
+package com.example.graduationproject.FacialAuthentication;
 
 
 import android.graphics.Bitmap;
@@ -17,7 +17,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-class facialLoginHandler extends AsyncTask<String, String,String> {
+public class facialLoginHandler extends AsyncTask<String, String,String> {
     String id;
 
     @Override
@@ -33,13 +33,7 @@ class facialLoginHandler extends AsyncTask<String, String,String> {
 
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         RequestBody body = RequestBody.create(mediaType, "photo="+names[0]);
-//        Request request = new Request.Builder()
-//                .url("https://luxand-cloud-face-recognition.p.rapidapi.com/photo/search")
-//                .post(body)
-//                .addHeader("x-rapidapi-host", "luxand-cloud-face-recognition.p.rapidapi.com")
-//                .addHeader("x-rapidapi-key", "b8f892acb6msh1fdb5ea8f22729ap18a944jsn01ddb7e55b18")
-//                .addHeader("content-type", "application/x-www-form-urlencoded")
-//                .build();
+
         Request request = new Request.Builder()
                 .url("https://luxand-cloud-face-recognition.p.rapidapi.com/photo/search")
                 .post(body)
@@ -49,7 +43,6 @@ class facialLoginHandler extends AsyncTask<String, String,String> {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-//            System.out.println(response.body().toString());
             JSONArray jArr= new JSONArray(response.body().string());
             JSONObject obj = new JSONObject(jArr.getJSONObject(0).toString());
             id = obj.getString("id");
