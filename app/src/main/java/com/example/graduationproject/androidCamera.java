@@ -162,9 +162,9 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
             camera.stopPreview();
             camera.stopFaceDetection();
-            if(mode==1){
+            if(mode==0){
                 login();
-            }else if(mode==2){
+            }else if(mode==1){
 
                 registerFace();
             }

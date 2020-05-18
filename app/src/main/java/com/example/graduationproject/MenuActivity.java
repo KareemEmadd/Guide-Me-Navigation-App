@@ -147,7 +147,7 @@ public class MenuActivity extends Activity {
         String myObjects;
 
         if (result_message.indexOf("personal") != -1) {
-//            ProceedToLogin();
+            ProceedToPersonal();
 
         } else if (result_message.indexOf("general") != -1) {
             ProceedToDetection();
@@ -160,6 +160,13 @@ public class MenuActivity extends Activity {
         speechRecog.stopListening();
 
     }
+
+    private void ProceedToPersonal() {
+        Intent i = new Intent(this, DetectorCustomizedActivity.class);
+
+        startActivity(i);
+    }
+
     public void ProceedToDetection(){
         Intent i = new Intent(this, DetectorActivity.class);
 

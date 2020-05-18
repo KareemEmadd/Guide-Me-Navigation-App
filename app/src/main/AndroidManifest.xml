@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MenuActivity" ></activity>
-
+        <activity android:name=".DetectorCustomizedActivity" ></activity>
         <activity android:name=".androidCamera" ></activity>
         <activity android:name=".DetectorActivity" ></activity>
 

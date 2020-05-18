@@ -173,7 +173,7 @@ public class HomeActivity extends Activity {
         startActivity(i);
     }
     public void ProceedToGuest(){
-        Intent i = new Intent(this, DetectorActivity.class);
+        Intent i = new Intent(this, MenuActivity.class);
 
         startActivity(i);
     }
