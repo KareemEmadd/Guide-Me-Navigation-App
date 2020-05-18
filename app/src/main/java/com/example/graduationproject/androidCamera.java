@@ -31,8 +31,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -66,11 +68,16 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
     Integer mode;
     String facialRecID;
     MediaActionSound sound;
+    private ProgressBar spinner;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mode =getIntent().getIntExtra("mode",0);
+        setContentView(R.layout.activity_authentication);
+
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
         if(mode==2){
 
             try {
@@ -82,7 +89,6 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
         }
 //        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         sound = new MediaActionSound();
-        setContentView(R.layout.activity_authentication);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getWindow().setFormat(PixelFormat.UNKNOWN);
         surfaceView = (SurfaceView)findViewById(R.id.camerapreview);
@@ -142,7 +148,6 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
             // TODO Auto-generated method stub
             bitmap = BitmapFactory.decodeByteArray(arg0, 0, arg0.length,option);
             Toast.makeText(getApplicationContext(),"No bitmap1", Toast.LENGTH_SHORT).show();
-
         }};
 
     PictureCallback myPictureCallback_JPG = new PictureCallback(){
@@ -166,6 +171,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
                 registerFace();
             }
+            spinner.setVisibility(View.VISIBLE);
 
         }};
 
@@ -257,6 +263,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
                                     //createNewPost(imageUrl);
                                     System.out.println(imageUrl);
                                     flh.execute(encode(imageUrl));
+                                    ProceedToMenu();
                                 }
                             });
                         }
@@ -329,7 +336,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
                                     //createNewPost(imageUrl);
                                     System.out.println(user_id);
                                     r.execute(encode(imageUrl), "31727");
-                                    ProceedToDetection();
+                                    ProceedToMenu();
                                 }
                             });
                         }
@@ -371,8 +378,8 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
         }
     }
-    public void ProceedToDetection(){
-        Intent i = new Intent(this, DetectorActivity.class);
+    public void ProceedToMenu(){
+        Intent i = new Intent(this, MenuActivity.class);
 
         startActivity(i);
     }

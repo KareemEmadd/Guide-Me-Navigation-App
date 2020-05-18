@@ -29,7 +29,7 @@ TextToSpeech tts;
 SpeechRecognizer speechRecog;
 SpeechRecognizer usernameRecog;
 String[] choices = {"login" , "register" , "guest"};
-LinearLayout LL;
+
 Integer mode=0;
 String userid="";
 boolean REGISTRATION_MODE=false;
@@ -44,7 +44,6 @@ ImageButton btn;
         initializeSpeechRecognizer();
 
         btn=findViewById(R.id.button);
-        LL=findViewById(R.id.linearl);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,7 +56,6 @@ ImageButton btn;
             }
         });
 
-        speak("Would you like to register, login, or proceed as a guest?");
 
     }
 
@@ -79,7 +77,10 @@ ImageButton btn;
                     tts.setLanguage(Locale.US);
 //                    speak("Hello there, I am ready to start our conversation");
                 }
+                speak("Click on the screen and state your choice to proceed to register, " +
+                        "login or guest mode");
             }
+
         });
     }
     private void initializeSpeechRecognizer() {
@@ -88,6 +89,7 @@ ImageButton btn;
             speechRecog.setRecognitionListener(new RecognitionListener() {
                 @Override
                 public void onReadyForSpeech(Bundle params) {
+
 
                 }
 
@@ -156,8 +158,7 @@ ImageButton btn;
 
 //        speak(result_message);
 //        wait(2000);
-        speak("You have choosen your username to be " + result_message + " you will be using it to login");
-        userid=result_message;
+//        userid=result_message;
 
         speechRecog.stopListening();
         ProceedToRegistration();

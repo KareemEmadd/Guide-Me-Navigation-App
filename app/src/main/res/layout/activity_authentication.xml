@@ -5,12 +5,16 @@
     android:orientation="vertical" >
 
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/circular_progress_bar"
+         />
 
     <SurfaceView
         android:id="@+id/camerapreview"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
-
-
+        android:layout_width="425dp"
+        android:layout_height="764dp" />
 </LinearLayout>
