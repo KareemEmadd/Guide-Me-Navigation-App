@@ -4,24 +4,17 @@ package com.example.graduationproject;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.concurrent.ExecutionException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -34,23 +27,15 @@ import android.media.AudioManager;
 import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.TextureView;
-import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -87,10 +72,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
         super.onCreate(savedInstanceState);
         mode =getIntent().getIntExtra("mode",0);
         if(mode==2){
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference();
-            user_id=myRef.push().getKey();
-            myRef.push().setValue("1");
+
             try {
                 registerName();
             } catch (Exception e) {
@@ -98,11 +80,10 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
             }
 
         }
-        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         sound = new MediaActionSound();
         setContentView(R.layout.activity_authentication);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        user_id=getIntent().getExtras().getString("UID");
         getWindow().setFormat(PixelFormat.UNKNOWN);
         surfaceView = (SurfaceView)findViewById(R.id.camerapreview);
         surfaceHolder = surfaceView.getHolder();
@@ -111,7 +92,6 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
         option=new BitmapFactory.Options();
         controlInflater = LayoutInflater.from(getBaseContext());
         option.inJustDecodeBounds=false;
-        //        View viewControl = controlInflater.inflate(R.layout.control, null);
         LayoutParams layoutParamsControl
                 = new LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT);
@@ -320,6 +300,9 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Matrix matrix = new Matrix();
+            matrix.postRotate(-90);
+            bitmap= Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
 
@@ -343,7 +326,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
                                     //createNewPost(imageUrl);
                                     System.out.println(user_id);
-                                    r.execute(encode(imageUrl), facialRecID);
+                                    r.execute(encode(imageUrl), "31727");
                                     ProceedToDetection();
                                 }
                             });
@@ -373,6 +356,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
                 protected void onPostExecute(String result) {
                     Toast.makeText(getApplicationContext(),result, Toast.LENGTH_SHORT).show();
                     facialRecID=result;
+                    addNewUser(facialRecID);
                 }
 
             };
@@ -390,4 +374,11 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
         startActivity(i);
     }
+    void addNewUser(String result){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        user_id=myRef.push().getKey();
+        myRef.push().setValue(result);
+    }
 }
+    

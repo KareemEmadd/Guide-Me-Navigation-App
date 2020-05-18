@@ -41,7 +41,6 @@ ImageButton btn;
         setContentView(R.layout.activity_home);
 
         initializeTextToSpeech();
-        speak("Would you like to register, login, or proceed as a guest?");
         initializeSpeechRecognizer();
 
         btn=findViewById(R.id.button);
@@ -49,6 +48,8 @@ ImageButton btn;
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                speak("Would you like to register, login, or proceed as a guest?");
+
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
@@ -170,9 +171,9 @@ ImageButton btn;
             ProceedToLogin();
 
         } else if (result_message.indexOf("register") != -1) {
-            speak("Choose your new username");
+//            speak("Choose your new username");
             REGISTRATION_MODE=true;
-//            ProceedToRegistration();
+            ProceedToRegistration();
         } else if (result_message.indexOf("guest") != -1) {
         ProceedToGuest();
         }
@@ -181,26 +182,7 @@ ImageButton btn;
 
     }
 
-//            if(result_message.indexOf("mobile") != -1)
-//        {
-//            speak("Dawar aala haga tanya");
-//        }
-//        if(result_message.indexOf("what") != -1){
-//            if(result_message.indexOf("your name") != -1){
-//                speak("My Name is Mr.Android. Nice to meet you!");
-//                ProceedToRegistration();
-//            }
-//            if (result_message.indexOf("time") != -1){
-//                String time_now = DateUtils.formatDateTime(this, new Date().getTime(),DateUtils.FORMAT_SHOW_TIME);
-//                speak("The time is now: " + time_now);
-//            }
-//        } else if (result_message.indexOf("earth") != -1){
-//            speak("Don't be silly, The earth is a sphere. As are all other planets and celestial bodies");
-//        } else if (result_message.indexOf("browser") != -1){
-//            speak("Opening a browser right away master.");
-//            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/AnNJPf-4T70"));
-//            startActivity(intent);
-//        }
+
 
     public void listen(){
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -218,7 +200,7 @@ ImageButton btn;
         Intent i = new Intent(this, androidCamera.class);
         mode=2;
         i.putExtra("mode",mode);
-        i.putExtra("userid",userid);
+//        i.putExtra("userid",userid);
         startActivity(i);
     }
     public void ProceedToGuest(){
