@@ -159,6 +159,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
 
 
             camera.stopPreview();
+            camera.stopFaceDetection();
             if(mode==1){
                 login();
             }else if(mode==2){
@@ -203,6 +204,7 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // TODO Auto-generated method stub
+
         camera.stopFaceDetection();
         camera.stopPreview();
         camera.release();
@@ -381,4 +383,3 @@ public class androidCamera extends Activity implements SurfaceHolder.Callback{
         myRef.push().setValue(result);
     }
 }
-    
