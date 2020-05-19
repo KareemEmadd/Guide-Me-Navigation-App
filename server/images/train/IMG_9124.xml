@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>IMG_9124.JPG</filename>
+	<path>C:\Users\shehab\PycharmProjects\model\models-master\research\object_detection\images\train\IMG_9124.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>600</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>cover</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>294</xmin>
+			<ymin>128</ymin>
+			<xmax>619</xmax>
+			<ymax>469</ymax>
+		</bndbox>
+	</object>
+</annotation>
