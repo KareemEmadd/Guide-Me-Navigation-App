@@ -2,7 +2,6 @@
 package com.example.graduationproject;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -10,26 +9,22 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.speech.RecognitionListener;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.example.graduationproject.CameraActivity;
 import com.example.graduationproject.customview.OverlayView;
 import com.example.graduationproject.env.BorderedText;
 import com.example.graduationproject.env.ImageUtils;
@@ -38,7 +33,6 @@ import com.example.graduationproject.tflite.TFLiteObjectDetectionAPIModel;
 import com.example.graduationproject.tracking.MultiBoxTracker;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +47,7 @@ import java.util.Random;
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
 //  private static final Logger LOGGER = new Logger();
   private TextToSpeech tts;
-
+  View childView;
   // Configuration values for the prepackaged SSD model.
   private static final int TF_OD_API_INPUT_SIZE = 300;
   private static final boolean TF_OD_API_IS_QUANTIZED = true;
@@ -228,6 +222,20 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   location.sort();
                   canvas.drawRect(location, paint);
 
+                  Rect offsetViewBounds = new Rect();
+//returns the visible bounds
+                  location.round(offsetViewBounds);
+                  childView = findViewById(R.id.texture).getRootView();
+                  childView.getLocalVisibleRect(offsetViewBounds);
+//                          .getDrawingRect(offsetViewBounds);
+//                  childView.getDrawingRect(offsetViewBounds);
+// calculates the relative coordinates to the parent
+//                  ViewGroup rl=findViewById(R.id.rl);
+//                  View rl=childView.getRootView();
+//                  rl.offsetDescendantRectToMyCoords(childView, offsetViewBounds);
+//                rl.offsetDescendantRectToMyCoords(childView,offsetViewBounds);
+//                  int relativeTop = offsetViewBounds.top;
+//                  int relativeLeft = offsetViewBounds.left;
                   if (searcher.equals(""))
                   {
                     if (location != null && result.getConfidence() >= minimumConfidence) {
@@ -244,10 +252,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                       result.setLocation(location);
 
                       Log.d("Coordinates",location.toString());
+                      Log.d("ParentCoord",offsetViewBounds.top+location.top+"");
                       mappedRecognitions.add(result);
 //                  Toast.makeText(getBaseContext(), location.centerX()+" >"+screenCenter,Toast.LENGTH_LONG).show();
 
-                      if(location.left<130) {
+                      if(location.left<screenCenter) {
 //                    speak("To your right");
                         Log.d("direction","right");
 
@@ -255,7 +264,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                         Toast.makeText(getBaseContext(), "right "+location.centerX(),Toast.LENGTH_LONG).show();
 
-                      }else if(location.left>130) {
+                      }else if(location.left>screenCenter) {
 //                    speak("To your right");
                         Log.d("direction","left");
 //                    Log.d("direction",String.valueOf(location.left+(location.width()/2)));
@@ -266,22 +275,26 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                       }
 
                     }
+
                   }
                   else
                   {
-                    if(location != null && result.getConfidence() >= minimumConfidence && result.getTitle().equals(searcher))
-                    {
+                    if(location != null && result.getConfidence() >= minimumConfidence && result.getTitle().equals(searcher)) {
                       canvas.drawRect(location, paint);
                       cropToFrameTransform.mapRect(location);
 
                       result.setLocation(location);
 
-                      Log.d("Coordinates",location.toString());
+                      Log.d("Coordinates", location.toString());
                       mappedRecognitions.add(result);
-                      if(location.centerX()>screenCenter) {
-                        speak("To your right");
-                      }
+                      if (location.left > screenCenter) {
+//                        speak("To your right");
+                        System.out.println("left");
 
+                      }
+                    else if(location.left>screenCenter) {
+                    }
+                        System.out.println("right");
                     }
                   }
                 }

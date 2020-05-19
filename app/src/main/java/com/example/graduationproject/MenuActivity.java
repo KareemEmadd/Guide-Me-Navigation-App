@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -32,18 +33,20 @@ public class MenuActivity extends Activity {
     TextToSpeech tts;
     SpeechRecognizer speechRecog;
     String choice;
-    String choices[]={"custom","general","object"};
+    String choices[]={"general","object","custom"};
     ImageButton btn;
     StorageReference storageRef;
     StorageReference videoRef;
     static final int REQUEST_VIDEO_CAPTURE = 1;
-
+    int mode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         initializeTextToSpeech();
         initializeSpeechRecognizer();
+        mode=getIntent().getIntExtra("mode",3);
+
         btn=findViewById(R.id.menuBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,8 +133,15 @@ public class MenuActivity extends Activity {
                     tts.setLanguage(Locale.US);
 //                    speak("Hello there, I am ready to start our conversation");
                 }
-                speak("Click on the screen and state your choice to proceed to general, " +
-                        "personal or new object mode");
+                if(mode==2)
+                    speak("To Proceed to object search, say general");
+
+                else{
+                    speak("Click on the screen and state your choice to proceed to general, " +
+                            "personal or new object mode");
+
+
+                }
             }
         });
     }
@@ -146,15 +156,18 @@ public class MenuActivity extends Activity {
         result_message = result_message.toLowerCase();
         String myObjects;
 
-        if (result_message.indexOf("personal") != -1) {
-            ProceedToPersonal();
+        if (result_message.indexOf("general") != -1) {
+                ProceedToDetection();
 
-        } else if (result_message.indexOf("general") != -1) {
-            ProceedToDetection();
+        } else if (result_message.indexOf("personal") != -1) {
+            if(mode!=2)
+
+                ProceedToPersonal();
 //            ProceedToRegistration();
         } else if (result_message.indexOf("object") != -1) {
 //            ProceedToAddObject();
-            dispatchTakeVideoIntent();
+            if(mode!=2)
+                dispatchTakeVideoIntent();
         }
 
         speechRecog.stopListening();

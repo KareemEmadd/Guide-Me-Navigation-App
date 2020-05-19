@@ -144,7 +144,8 @@ public class HomeActivity extends Activity {
             REGISTRATION_MODE=1;
             ProceedToRegistration();
         } else if (result_message.indexOf("guest") != -1) {
-        ProceedToGuest();
+            REGISTRATION_MODE=2;
+            ProceedToGuest();
         }
 
         speechRecog.stopListening();
@@ -174,6 +175,7 @@ public class HomeActivity extends Activity {
     }
     public void ProceedToGuest(){
         Intent i = new Intent(this, MenuActivity.class);
+        i.putExtra("mode",REGISTRATION_MODE);
 
         startActivity(i);
     }
