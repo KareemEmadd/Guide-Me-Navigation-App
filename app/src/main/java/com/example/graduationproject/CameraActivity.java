@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -28,6 +29,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
@@ -52,6 +54,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -89,6 +92,9 @@ public abstract class CameraActivity extends AppCompatActivity
 
     private TextView headerObject;
     public String searcher;
+    public int myCounter;
+    private HashMap<String, Double> avgWidthMap=new HashMap<String, Double>();
+
 
     private TextToSpeech tts;
     private SpeechRecognizer speechRecog;
@@ -120,9 +126,22 @@ public abstract class CameraActivity extends AppCompatActivity
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
         searcher="";
+        myCounter=0;
 
         headerObject = findViewById(R.id.headerObject);
         headerObject.setText("General");
+
+        avgWidthMap.put("laptop",15.6);
+        avgWidthMap.put("person",14.5);
+        avgWidthMap.put("tv",43.0);
+        avgWidthMap.put("cup",3.5);
+        avgWidthMap.put("chair",22.0);
+        avgWidthMap.put("keyboard",18.0);
+        avgWidthMap.put("table",30.0);
+        avgWidthMap.put("book",6.0);
+        avgWidthMap.put("clock",6.0);
+        avgWidthMap.put("bottle",2.5);
+        avgWidthMap.put("bed",55.0);
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
@@ -622,6 +641,7 @@ public abstract class CameraActivity extends AppCompatActivity
                     {
                         speak("Not Valid");
                     }
+                    myCounter=0;
 
 
                 }
@@ -683,6 +703,48 @@ public abstract class CameraActivity extends AppCompatActivity
             tts.speak(message,TextToSpeech.QUEUE_FLUSH,null,null);
         } else {
             tts.speak(message, TextToSpeech.QUEUE_FLUSH,null);
+        }
+    }
+
+    void getDistance(RectF location, String x, double y) {
+
+        String title = x;
+
+        double avgWidth;
+        myCounter++;
+        if (avgWidthMap.containsKey(title)) {
+            avgWidth = avgWidthMap.get(title);
+        } else
+            avgWidth = 1.0;
+        double focalLength;
+        double distance;
+        String orientation="Front";
+        double imageHieght = Math.round((location.top - location.bottom) * 0.0264583333 * 10) / 10.0;
+        System.out.println("imageheight" + imageHieght);
+        Log.d("imageheight", "imageheight: " + imageHieght);
+        focalLength = ((LegacyCameraConnectionFragment) getFragmentManager().findFragmentById(R.id.container)).getFocalLength();
+        Toast.makeText(this, "distance: " + ((avgWidth) * (focalLength * 1000)) / (location.width()), Toast.LENGTH_SHORT).show();
+        //Integer myChecker = myCounter % 20;
+        if (myCounter == 3) {
+            speak("Object Found Keep Phone Steady");
+        }
+        if (myCounter == 20) {
+
+            if (y < 100){
+                orientation = "Left";
+            }
+            else if(y > 200){
+                orientation = "Right";
+            }
+
+            distance = ((avgWidth) * (focalLength * 1000)) / (location.width());
+            int value = ((int)distance)/12;
+            speak("Object found at distance"+value+"to the"+orientation);
+
+        }
+        if(myCounter==100)
+        {
+            myCounter=0;
         }
     }
 

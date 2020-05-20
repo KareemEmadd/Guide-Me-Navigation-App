@@ -191,36 +191,14 @@ public class DetectorCustomizedActivity extends CameraActivity implements OnImag
 
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
-                            Log.d("Searcheer",searcher);
-                            if (searcher.toLowerCase().equals("object"))
-                            {
                                 if (location != null && result.getConfidence() >= minimumConfidence) {
                                     canvas.drawRect(location, paint);
-
-                                    cropToFrameTransform.mapRect(location);
-
-                                    result.setLocation(location);
-                                    Log.d("Coordinates",location.toString());
-                                    mappedRecognitions.add(result);
-//                                    ***getDistance(result.getLocation());
-
-
-                                }
-                            }
-                            else
-                            {
-                                if(location != null && result.getConfidence() >= minimumConfidence && result.getTitle().equals(searcher))
-                                {
-                                    canvas.drawRect(location, paint);
-
+                                    double x = location.left;
                                     cropToFrameTransform.mapRect(location);
                                     result.setLocation(location);
-                                    Log.d("Coordinates",location.toString());
                                     mappedRecognitions.add(result);
-//                            ****    getDistance(result.getLocation());
-
+                                    getDistance(result.getLocation(),result.getTitle(),x);
                                 }
-                            }
                         }
 
                         tracker.trackResults(mappedRecognitions, currTimestamp);

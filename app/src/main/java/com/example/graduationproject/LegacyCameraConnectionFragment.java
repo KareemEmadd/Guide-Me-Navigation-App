@@ -206,4 +206,12 @@ public class LegacyCameraConnectionFragment extends Fragment {
     }
     return -1; // No camera found
   }
+
+  double getFocalLength(){
+    if (camera != null){
+      return  camera.getParameters().getFocalLength()/10.0; // we divided by 10 to get the length in centimeters
+    }
+    return 0;
+
+  }
 }

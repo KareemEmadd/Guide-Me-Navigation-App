@@ -216,85 +216,30 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                 final List<Classifier.Recognition> mappedRecognitions =
                         new LinkedList<Classifier.Recognition>();
-                int i=0;
                 for (final Classifier.Recognition result : results) {
                   final RectF location = result.getLocation();
-                  location.sort();
-                  canvas.drawRect(location, paint);
-
-                  Rect offsetViewBounds = new Rect();
-//returns the visible bounds
-                  location.round(offsetViewBounds);
-                  childView = findViewById(R.id.texture).getRootView();
-                  childView.getLocalVisibleRect(offsetViewBounds);
-//                          .getDrawingRect(offsetViewBounds);
-//                  childView.getDrawingRect(offsetViewBounds);
-// calculates the relative coordinates to the parent
-//                  ViewGroup rl=findViewById(R.id.rl);
-//                  View rl=childView.getRootView();
-//                  rl.offsetDescendantRectToMyCoords(childView, offsetViewBounds);
-//                rl.offsetDescendantRectToMyCoords(childView,offsetViewBounds);
-//                  int relativeTop = offsetViewBounds.top;
-//                  int relativeLeft = offsetViewBounds.left;
-                  if (searcher.equals(""))
+                  if (searcher.toLowerCase().equals(""))
                   {
                     if (location != null && result.getConfidence() >= minimumConfidence) {
                       canvas.drawRect(location, paint);
-                      Log.d("framewidth", String.valueOf( canvas.getWidth()));
-
                       if(location.width()>200){
                         vibrator.vibrate(100);
-
-
                       }
-
                       cropToFrameTransform.mapRect(location);
                       result.setLocation(location);
-
-                      Log.d("Coordinates",location.toString());
-                      Log.d("ParentCoord",offsetViewBounds.top+location.top+"");
                       mappedRecognitions.add(result);
-//                  Toast.makeText(getBaseContext(), location.centerX()+" >"+screenCenter,Toast.LENGTH_LONG).show();
-
-                      if(location.left<screenCenter) {
-//                    speak("To your right");
-                        Log.d("direction","right");
-
-                        Log.d("direction","left "+location.left +"width  "+ location.width() +"right "+location.right +" total "+ location.left+location.right+location.width());
-
-                        Toast.makeText(getBaseContext(), "right "+location.centerX(),Toast.LENGTH_LONG).show();
-
-                      }else if(location.left>screenCenter) {
-//                    speak("To your right");
-                        Log.d("direction","left");
-//                    Log.d("direction",String.valueOf(location.left+(location.width()/2)));
-                        Log.d("direction","left "+location.left +"width  "+ location.width() +"right "+location.right +" total "+ (location.left+location.right+location.width()));
-
-                        Toast.makeText(getBaseContext(), "left "+location.centerX(),Toast.LENGTH_LONG).show();
-
-                      }
-
                     }
-
                   }
                   else
                   {
-                    if(location != null && result.getConfidence() >= minimumConfidence && result.getTitle().equals(searcher)) {
+                    if(location != null && result.getConfidence() >= minimumConfidence && result.getTitle().equals(searcher))
+                    {
                       canvas.drawRect(location, paint);
+                      double x = location.left;
                       cropToFrameTransform.mapRect(location);
-
                       result.setLocation(location);
-
-                      Log.d("Coordinates", location.toString());
                       mappedRecognitions.add(result);
-                      if (location.left > screenCenter) {
-//                        speak("To your right");
-                        System.out.println("left");
-
-                      }
-                    else if(location.left>screenCenter) {
-                    }
-                        System.out.println("right");
+                      getDistance(result.getLocation(),result.getTitle(),x);
                     }
                   }
                 }
