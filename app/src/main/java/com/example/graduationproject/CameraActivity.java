@@ -725,8 +725,9 @@ public abstract class CameraActivity extends AppCompatActivity
         System.out.println("imageheight" + imageHieght);
         Log.d("imageheight", "imageheight: " + imageHieght);
         focalLength = ((LegacyCameraConnectionFragment) getFragmentManager().findFragmentById(R.id.container)).getFocalLength();
-        Toast.makeText(this, "distance: " + ((avgWidth) * (focalLength * 1000)) / (location.width()), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "distance: " + ((avgWidth) * (focalLength * 1000)) / (location.width()), Toast.LENGTH_SHORT).show();
         //Integer myChecker = myCounter % 20;
+
         if (myCounter == 3) {
             vibrator.vibrate(100);
 
@@ -735,14 +736,14 @@ public abstract class CameraActivity extends AppCompatActivity
         if (myCounter == 20) {
 
             if (y < 100){
-                orientation = "Left";
+                orientation = "slight Left";
             }
             else if(y > 200){
-                orientation = "Right";
+                orientation = "slight Right";
             }
 
             distance = ((avgWidth) * (focalLength * 1000)) / (location.width());
-            int value = ((int)distance)/12;
+            int value = (int)Math.round(distance/12);
             speak("Object found at distance "+value+" to the "+orientation);
 
         }

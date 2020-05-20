@@ -145,21 +145,14 @@ public class HomeActivity extends thread {
             });
         }
     }
-    private void processUsernameResult(String result_message) throws InterruptedException {
-        result_message = result_message.toLowerCase();
 
-        speechRecog.stopListening();
-        ProceedToRegistration();
-    }
     private void processResult(String result_message) {
         result_message = result_message.toLowerCase();
-        String myObjects;
 
         if (result_message.indexOf("login") != -1) {
             ProceedToLogin();
 
         } else if (result_message.indexOf("register") != -1) {
-//            speak("Choose your new username");
             REGISTRATION_MODE=1;
             ProceedToRegistration();
         } else if (result_message.indexOf("guest") != -1) {
@@ -189,7 +182,7 @@ public class HomeActivity extends thread {
         Intent i = new Intent(this, androidCamera.class);
 
         i.putExtra("mode",REGISTRATION_MODE);
-//        i.putExtra("userid",userid);
+
         startActivity(i);
     }
     public void ProceedToGuest(){
