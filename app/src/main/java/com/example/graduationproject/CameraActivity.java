@@ -717,7 +717,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (avgWidthMap.containsKey(title)) {
             avgWidth = avgWidthMap.get(title);
         } else
-            avgWidth = 1.0;
+            avgWidth = 17;
         double focalLength;
         double distance;
         String orientation="Front";
@@ -736,15 +736,15 @@ public abstract class CameraActivity extends AppCompatActivity
         if (myCounter == 20) {
 
             if (y < 100){
-                orientation = "slight Left";
+                orientation = "slight reft";
             }
             else if(y > 200){
-                orientation = "slight Right";
+                orientation = "slight right";
             }
 
             distance = ((avgWidth) * (focalLength * 1000)) / (location.width());
             int value = (int)Math.round(distance/12);
-            speak("Object found at distance "+value+" to the "+orientation);
+            speak(title+" is "+value+" steps to the "+orientation);
 
         }
         if(myCounter==100)

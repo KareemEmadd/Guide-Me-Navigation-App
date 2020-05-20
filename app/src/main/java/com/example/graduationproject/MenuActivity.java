@@ -166,7 +166,8 @@ public class MenuActivity extends thread{
 //            ProceedToRegistration();
         } else if (result_message.indexOf("object") != -1) {
 //            ProceedToAddObject();
-            if(mode!=2)
+
+//            if(mode!=2)
                 dispatchTakeVideoIntent();
         }
 
