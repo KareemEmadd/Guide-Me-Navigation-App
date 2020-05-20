@@ -1,22 +1,36 @@
 package com.example.graduationproject;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends thread {
+    private static final int PERMISSION_REQUEST_CODE_VIBRATE =2 ;
+    private static final int PERMISSION_REQUEST_CODE_COARSE_LOCATION = 3;
+    private static final int PERMISSION_REQUEST_CODE_RECORD_AUDIO = 4;
+    private static final int PERMISSION_REQUEST_CODE_FINE_LOCATION = 5;
+    private static final int PERMISSION_REQUEST_SEND_SMS =6 ;
     TextToSpeech tts;
+    private static final int PERMISSION_REQUEST_CODE_CAMERA = 1;
+
     SpeechRecognizer speechRecog;
     String[] choices = {"login" , "register" , "guest"};
     Integer mode=0;
@@ -30,6 +44,11 @@ public class HomeActivity extends Activity {
 
         initializeTextToSpeech();
         initializeSpeechRecognizer();
+
+
+            checkAllPermission();
+
+
 
         btn=findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -180,4 +199,59 @@ public class HomeActivity extends Activity {
         startActivity(i);
     }
 
+void checkAllPermission(){
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+        if (checkSelfPermission(Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+
+
+            Log.d("permission", "permission denied to SEND_SMS - requesting it");
+            String[] permissions = {Manifest.permission.CAMERA};
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE_CAMERA);
+        }
+        if (checkSelfPermission(Manifest.permission.SEND_SMS)
+                == PackageManager.PERMISSION_DENIED) {
+
+
+            Log.d("permission", "permission denied to SEND_SMS - requesting it");
+            String[] permissions = {Manifest.permission.SEND_SMS};
+            requestPermissions(permissions, PERMISSION_REQUEST_SEND_SMS);
+        }
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_DENIED) {
+
+
+            Log.d("permission", "permission denied to SEND_SMS - requesting it");
+            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE_COARSE_LOCATION);
+        }
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_DENIED) {
+
+
+            Log.d("permission", "permission denied to SEND_SMS - requesting it");
+            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE_FINE_LOCATION);
+        }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                == PackageManager.PERMISSION_DENIED) {
+
+
+            Log.d("permission", "permission denied to SEND_SMS - requesting it");
+            String[] permissions = {Manifest.permission.RECORD_AUDIO};
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE_RECORD_AUDIO);
+        }
+        if (checkSelfPermission(Manifest.permission.VIBRATE)
+                == PackageManager.PERMISSION_DENIED) {
+
+
+            Log.d("permission", "permission denied to SEND_SMS - requesting it");
+            String[] permissions = {Manifest.permission.VIBRATE};
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE_VIBRATE);
+        }
+
+
+    }
+}
 }

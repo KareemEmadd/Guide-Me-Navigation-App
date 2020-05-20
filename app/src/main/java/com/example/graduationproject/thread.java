@@ -27,8 +27,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.example.graduationproject.logger.Log;
-import com.example.graduationproject.logger.LogWrapper;
+//import com.example.graduationproject.logger.Log;
+//import com.example.graduationproject.logger.LogWrapper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -124,8 +124,8 @@ public class thread extends Activity implements SensorEventListener {
         // android.util.log method signatures.
 
         // Wraps Android's native log framework
-        LogWrapper logWrapper = new LogWrapper();
-        Log.setLogNode(logWrapper);
+//        LogWrapper logWrapper = new LogWrapper();
+//        Log.setLogNode(logWrapper);
 
         // A filter that strips out everything except the message text.
         //MessageOnlyLogFilter msgFilter = new MessageOnlyLogFilter();
