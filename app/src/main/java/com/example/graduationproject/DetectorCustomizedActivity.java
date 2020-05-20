@@ -193,6 +193,9 @@ public class DetectorCustomizedActivity extends CameraActivity implements OnImag
                             final RectF location = result.getLocation();
                                 if (location != null && result.getConfidence() >= minimumConfidence) {
                                     canvas.drawRect(location, paint);
+                                    if(location.width()>200){
+                                        vibrator.vibrate(100);
+                                    }
                                     double x = location.left;
                                     cropToFrameTransform.mapRect(location);
                                     result.setLocation(location);

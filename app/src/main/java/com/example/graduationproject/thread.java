@@ -98,7 +98,7 @@ public class thread extends Activity implements SensorEventListener {
             // Make this higher or lower according to how much
             // motion you want to detect
 
-            if (mAccel > 2.5) {
+            if (mAccel > 4) {
 
                 Intent intent = new Intent(this,timer.class);
 

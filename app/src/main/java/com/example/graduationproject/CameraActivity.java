@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
+import android.os.Vibrator;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -94,7 +95,7 @@ public abstract class CameraActivity extends AppCompatActivity
     public String searcher;
     public int myCounter;
     private HashMap<String, Double> avgWidthMap=new HashMap<String, Double>();
-
+    Vibrator vibrator;
 
     private TextToSpeech tts;
     private SpeechRecognizer speechRecog;
@@ -116,6 +117,7 @@ public abstract class CameraActivity extends AppCompatActivity
         } else {
             requestPermission();
         }
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         threadsTextView = findViewById(R.id.threads);
         plusImageView = findViewById(R.id.plus);
@@ -726,6 +728,8 @@ public abstract class CameraActivity extends AppCompatActivity
         Toast.makeText(this, "distance: " + ((avgWidth) * (focalLength * 1000)) / (location.width()), Toast.LENGTH_SHORT).show();
         //Integer myChecker = myCounter % 20;
         if (myCounter == 3) {
+            vibrator.vibrate(100);
+
             speak("Object Found Keep Phone Steady");
         }
         if (myCounter == 20) {
@@ -739,7 +743,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
             distance = ((avgWidth) * (focalLength * 1000)) / (location.width());
             int value = ((int)distance)/12;
-            speak("Object found at distance"+value+"to the"+orientation);
+            speak("Object found at distance "+value+" to the "+orientation);
 
         }
         if(myCounter==100)

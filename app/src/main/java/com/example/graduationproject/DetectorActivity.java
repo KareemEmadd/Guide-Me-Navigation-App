@@ -234,6 +234,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                   {
                     if(location != null && result.getConfidence() >= minimumConfidence && result.getTitle().equals(searcher))
                     {
+                      if(location.width()>200){
+                        vibrator.vibrate(100);
+                      }
                       canvas.drawRect(location, paint);
                       double x = location.left;
                       cropToFrameTransform.mapRect(location);

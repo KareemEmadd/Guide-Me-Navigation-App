@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class MenuActivity extends Activity {
+public class MenuActivity extends thread{
     TextToSpeech tts;
     SpeechRecognizer speechRecog;
     String choice;
