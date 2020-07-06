@@ -17,9 +17,9 @@ Google Assistant. <br>
 TensorFlow Lite. <br>
 
 ## Limitations
-Distance is measured starting from 30 cm away to 200 cm.
-Room lighting is important for object detection range.
-Phone must be connected to the internet.
+Distance is measured starting from 30 cm away to 200 cm. <br>
+Room lighting is important for object detection range. <br>
+Phone must be connected to the internet. <br>
 
 ## Acknolowdgements
 Dr. Salama Mohamed for providing prespective on the difficulties faced in his everyday life as someone with vision impairment.
